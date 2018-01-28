@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.shortcuts import redirect
-from PIL import Image
 
 # Create your views here.
 
