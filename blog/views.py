@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
-from .models import Post
-from .forms import PostForm
+from django.contrib.auth.decorators import login_required
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 from django.shortcuts import redirect
-
-
+from PIL import Image
 
 # Create your views here.
 
@@ -32,6 +32,9 @@ def post_new(request):
 
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    if post.author != request.user:
+    	return redirect(post.post)
+
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
@@ -43,3 +46,46 @@ def post_edit(request, pk):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
+
+@login_required
+def comment_new(request,pk):
+	if request.method == "POST":
+		form = CommentForm(request.POST)
+		if form.is_valid():
+			comment = form.save(commit=False)
+			comment.post = Post.objects.get(pk=pk)
+			comment.author = request.user
+			comment.save()
+			return redirect('post_detail',pk)
+	else:
+		form = CommentForm()
+	return render(request, 'blog/post_form.html', {'form': form})
+
+@login_required
+def comment_edit(request,post_pk,pk):
+	comment = Comment.objects.get(pk=pk)
+	if comment.author != request.user.username:
+		return redirect(comment.post)
+
+	if request.method == "POST":
+		form = CommentForm(request.POST, instance=comment)
+		if form.is_valid():
+			comment = form.save(commit=False)
+			comment.post = Post.objects.get(pk=post_pk)
+			comment.save()
+			return redirect(comment.post)
+	else:
+		form = CommentForm(instance=comment)
+	return render(request, 'blog/post_form.html', {'form': form})
+
+@login_required
+def comment_delete(request,post_pk,pk):
+	comment = Comment.objects.get(pk=pk)
+	if comment.author != request.user.username:
+		return redirect(comment.post)
+
+	if request.method == "POST":
+		comment.delete()
+		return redirect(comment.post)
+
+	return render(request, 'blog/comment_confirm_delete.html', {'comment': comment})

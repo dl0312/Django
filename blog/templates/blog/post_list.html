@@ -2,12 +2,13 @@
 
 {% block content %}
     {% for post in posts %}
+        {% if post.is_public %}
         <div class="post">
-            <div class="date">
+            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+            <div class="date" style="float:right">
                 {{ post.published_date }}
             </div>
-            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <p>{{ post.text|linebreaksbr }}</p>
         </div>
+        {% endif %}
     {% endfor %}
 {% endblock %}

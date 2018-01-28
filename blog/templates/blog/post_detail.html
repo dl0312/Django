@@ -1,16 +1,60 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-    <div class="post">
-        {% if post.published_date %}
-            <div class="date">
-                {{ post.published_date }}
-            </div>
-        {% endif %}
-        {% if user.is_authenticated %}
-		     <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-		{% endif %}
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.text|linebreaksbr }}</p>
-    </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+				  		<h1>{{ post.title }}</h1>
+				  	</div>
+				  	<div class="panel-body">
+					    <div class="post">
+							<style>
+								img { max-width: : 100%; }
+							</style>
+					        
+					        {% if post.published_date %}
+					            <div class="date" style="float:right">
+					            	posted by
+					                {{ post.author }}
+					                -
+					                {{ post.published_date }}
+					            </div>
+
+					        {% endif %}
+					        {% if post.image %}
+					        	<img src="{{ post.image.url }}"/>
+					        {% endif %}
+					        <p>{{ post.text|linebreaksbr }}</p>
+							<div class="panel-footer">
+								<a href="{% url 'post_list' %}" class="btn btn-default">to list</a>
+								<a href="{% url 'comment_new' post.pk %}" class="btn btn-primary">New comment</a>
+								{% if user.is_authenticated %}
+								     <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+								{% endif %}
+							</div>
+							<h3>Comments</h3>
+					        <ul>
+					        {% for comment in post.comment_set.all %}
+					        	<li>
+					        		<div class="user">
+					        			{{ comment.message }}
+						        		by {{ comment.author }}
+						        		<small>at {{ comment.created_date }}</small>
+						        		{% if comment.author == request.user.username %}
+						        			<a href="{{ comment.get_edit_url }}">Edit</a>
+						        			<a href="{{ comment.get_delete_url }}" class="text-danger">Delete</a>
+						        		{% endif %}
+						        	</div>
+					        	</li>
+					        {% endfor %}
+					    	</ul>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+        
 {% endblock %}
