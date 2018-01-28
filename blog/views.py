@@ -19,11 +19,12 @@ def post_detail(request, pk):
 
 def post_new(request):
 	if request.method == "POST":
-		form = PostForm(request.POST)
+		form = PostForm(request.POST or None, request.FILES or None)
 		if form.is_valid():
 			post = form.save(commit=False)
 			post.author = request.user
 			post.published_date = timezone.now()
+			post.is_public = True
 			post.save()
 			return redirect('post_detail',pk=post.pk)
 	else:
@@ -33,10 +34,10 @@ def post_new(request):
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if post.author != request.user:
-    	return redirect(post.post)
+    	return redirect(post)
 
     if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST or None, request.FILES or None, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -47,10 +48,17 @@ def post_edit(request, pk):
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
 
+def post_delete(request, pk):
+	post = get_object_or_404(Post, pk=pk)
+	if request.method == "POST":
+		post.delete()
+		return redirect(post)
+	return render(request, 'blog/comment_confirm_delete.html', {'post': post})
+
 @login_required
 def comment_new(request,pk):
 	if request.method == "POST":
-		form = CommentForm(request.POST)
+		form = CommentForm(request.POST or None)
 		if form.is_valid():
 			comment = form.save(commit=False)
 			comment.post = Post.objects.get(pk=pk)
@@ -64,7 +72,7 @@ def comment_new(request,pk):
 @login_required
 def comment_edit(request,post_pk,pk):
 	comment = Comment.objects.get(pk=pk)
-	if comment.author != request.user.username:
+	if comment.author != request.user:
 		return redirect(comment.post)
 
 	if request.method == "POST":

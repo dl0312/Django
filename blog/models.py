@@ -2,11 +2,22 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 
+def upload_location(instance, filename):
+    #filebase, extension = filename.split(".")
+    #return "%s/%s.%s" %(instance.id, filename, extension)
+    return "%s/%s" %(instance.id, filename)
+
 class Post(models.Model):
     author = models.ForeignKey('auth.User',on_delete=models.PROTECT)
     title = models.CharField(max_length=200)
     text = models.TextField()
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(upload_to=upload_location,
+        blank=True,
+        null=True,
+        width_field="width_field",
+        height_field="height_field")
+    height_field = models.IntegerField(default=0)
+    width_field = models.IntegerField(default=0)
 #   video = 
     is_public = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)

@@ -7,4 +7,5 @@ urlpatterns = [
 		'template_name': 'accounts/login_form.html',
 		}),
 	re_path(r'^signup/$', views.signup, name='signup'),
+	re_path(r'^profile/$', views.profile, name='profile'),
 ]
