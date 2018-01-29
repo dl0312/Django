@@ -14,8 +14,14 @@
     margin-left: 40px;
 }
 
-h1, h2, h3, h4 {
+.service_name {
     font-family: 'Lobster', cursive;
+    text-align: center;
+}
+
+.post_elements th{
+    background-color : "#4b5c68";
+    font color:"white";
 }
 
 .date {
@@ -44,5 +50,13 @@ h1, h2, h3, h4 {
 .post h1 a, .post h1 a:visited {
     color: #000000;
 }
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
                        

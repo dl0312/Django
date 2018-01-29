@@ -18,10 +18,13 @@ class Post(models.Model):
         height_field="height_field")
     height_field = models.IntegerField(default=0)
     width_field = models.IntegerField(default=0)
-#   video = 
+    video_key = models.CharField(max_length=12)
     is_public = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['id']
 
     def publish(self):
         self.published_date = timezone.now()
@@ -30,19 +33,13 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
-        return reverse('post_detail',args=[self.pk])
-
 class Comment(models.Model):
     # Post : Comment = 1 : N
-    post = models.ForeignKey(Post,on_delete=models.PROTECT)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
     author = models.CharField(max_length=10)
     message = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-id']
 
     def get_edit_url(self):
         return reverse('comment_edit', args=[self.post.pk, self.pk])

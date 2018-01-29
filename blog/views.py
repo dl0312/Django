@@ -9,13 +9,15 @@ from django.shortcuts import redirect
 # Create your views here.
 
 def post_list(request):
-	posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+	posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-id')
 	return render(request, 'blog/post_list.html', {'posts': posts})
 
 def post_detail(request, pk):
-	post = get_object_or_404(Post, pk=pk)
-	return render(request, 'blog/post_detail.html', {'post': post})
+	selected_post = get_object_or_404(Post, pk=pk)
+	posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-id')
+	return render(request, 'blog/post_detail.html', {'posts':posts, 'selected_post':selected_post})
 
+@login_required
 def post_new(request):
 	if request.method == "POST":
 		form = PostForm(request.POST or None, request.FILES or None)
@@ -30,6 +32,7 @@ def post_new(request):
 		form = PostForm()
 	return render(request, 'blog/post_edit.html', {'form': form})
 
+@login_required
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if post.author != request.user:
@@ -47,12 +50,13 @@ def post_edit(request, pk):
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
 
-def post_delete(request, pk):
+@login_required
+def post_delete(request,pk):
 	post = get_object_or_404(Post, pk=pk)
 	if request.method == "POST":
 		post.delete()
-		return redirect(post)
-	return render(request, 'blog/comment_confirm_delete.html', {'post': post})
+		return redirect('post_list')
+	return render(request, 'blog/post_confirm_delete.html', {'post': post})
 
 @login_required
 def comment_new(request,pk):
@@ -88,11 +92,7 @@ def comment_edit(request,post_pk,pk):
 @login_required
 def comment_delete(request,post_pk,pk):
 	comment = Comment.objects.get(pk=pk)
-	if comment.author != request.user.username:
-		return redirect(comment.post)
-
 	if request.method == "POST":
 		comment.delete()
 		return redirect(comment.post)
-
 	return render(request, 'blog/comment_confirm_delete.html', {'comment': comment})

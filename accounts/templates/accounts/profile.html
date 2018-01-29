@@ -1,4 +1,6 @@
 {% extends "accounts/layout.html" %}
 {% block content %}
-	<h3>{{ user }}'s Profile</h3>
+	<h3>{{ user.username }}'s Profile</h3>
+	<h3>pw: {{ user.password }}</h3>
+	<h3>email: {{ user.email }}</h3>
 {% endblock %}
