@@ -10,6 +10,6 @@ urlpatterns = [
 	re_path(r'^signup/$', views.signup, name='signup'),
 	re_path(r'^profile/$', views.profile, name='profile'),
 	re_path(r'^logout/$', auth_views.logout, name='logout',
-		kwargs={'next_page': 'settings.LOGIN_URL',}
+		kwargs={'next_page': 'post_list',}
 	)
 ]

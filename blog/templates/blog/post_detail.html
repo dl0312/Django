@@ -1,165 +1,152 @@
 {% extends 'blog/base.html' %}
 {% block content %}
 	<style>
-        table {
+        .list table {
             border: 1px solid #444444;
         }
-        th, td, td a:visited, td a:active{
+        .list th,.list td,.list td a:visited{
             color: black;
             border-bottom: 1px solid #444444;
             padding-left: 15px;
             text-decoration: none;
         }
-        th{
+        .list th{
             background-color : #344b87;
             color: white;
         }
     </style>
 	<div class="container">
-		<div class="row">
-			<div class="col-md-16">
-				<div class="panel panel-default">
-					<div class="panel-heading" style="text-align:center; padding-top:10px; padding-bottom: 10px; margin-top: 30px; background-color:#92A8D1; border: 2px solid #444444; box-shadow: 1px 1px 1px grey;">
-				  		<h2><strong style="font-family: 'Oswald'">{{ selected_post.title }}&nbsp;<span style="color:#1c5a8e;" class="reply_count">[{{selected_post.comment_set.all.count}}]</span></strong></h2>
-				  		
-				  	</div>
-				  	<div class="panel-body">
-					    <div class="post">
-					        {% if selected_post.published_date %}
-					            <div class="date" style="text-align: right; width:1009px; padding: 15px">
-					            	posted by
-					                <strong>{{ selected_post.author }}</strong>
-					                <span class="txt_bar"> | </span>
-					                {{ selected_post.published_date }}
-					            </div>
-					        {% endif %}
-					        {% if selected_post.image %}
-					        <div class="input_image">
-					        	<img style="display: block;
-								    margin-left: auto;
-								    margin-right: auto;
-								    margin-bottom: 25px;
-								    max-width: 600px;" src="{{ selected_post.image.url }}"/>
-					        </div>
-					        {% endif %}
-					        {% if selected_post.video_key %}
-					        	<script>
-								    var tag = document.createElement('script');
-
-								    tag.src = "https://www.youtube.com/iframe_api";
-								    var firstScriptTag = document.getElementsByTagName('script')[0];
-								    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-								    var player;
-								    function onYouTubeIframeAPIReady() {
-								        player = new YT.Player('player', {
-								            videoId: '{{ selected_post.video_key }}'
-								        });
-								    }
-								</script>
-					        {% endif %}
-					        <p>{{ selected_post.text|linebreaksbr }}</p>
-							<div class="panel-footer">
-								<div class="panel-heading" style="margin-bottom:40px">
-									<span class="comment_title">댓글</span>
-									<span class="txt_bar"> | </span>
-									<span class="num_txt">총 <strong class="reply_count">
-									{{ selected_post.comment_set.all.count }}
-									</strong> 개</span>
-									<span style="float:right">
-										<a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'comment_new' selected_post.pk %}" class="btn btn-primary">새 댓글</a>
-										<a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'post_list' %}" class="btn btn-default">글목록</a>
-										{% if user.is_authenticated %}
-											{% if selected_post.author == request.user %}
-											    <a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" class="btn btn-default" href="{% url 'post_edit' pk=selected_post.pk %}">수정</a>
-											    <a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" class="btn btn-danger" href="{% url 'post_delete' pk=selected_post.pk %}" >삭제</a>
-										    {% endif %}
-										{% endif %}
-									</span>
-								</div>
-								<div class="panel-body">
-								    <table width=1009px>
-								        {% for comment in selected_post.comment_set.all %}
-								        <style>
-										    .user{
-									        	margin: 15px;
-									        }
-									    </style>
-							        		<div class="user">
-							        		<tr>
-							        			<td width="80px" style="background-color: #efefef; text-align: left;"><strong>{{ comment.author }}</strong></td>
-							        			<td class="user" width=750px>
-							        				{{ comment.message }}
-							        			</td>
-							        			<td>
-							        			{% if comment.author == request.user.username %}
-								        			<a href="{{ comment.get_edit_url }}">수정</a>
-								        			<a href="{{ comment.get_delete_url }}" class="text-danger">삭제</a>
-								        		{% endif %}
-								        		</td>
-								        		<td width=60px>{{ comment.created_date|date:"H:i" }}</td>
-								        	</tr>
-								        	</div>
-								        {% endfor %}
-									</table>
-								</div>
-							</div>
-					  	</div>
+		<div id="panel" class="panel panel-default">
+			<div class="panel-heading" style="text-align:center; padding-top:10px; padding-bottom: 10px; margin-top: 30px; background-color:#92A8D1; border: 2px solid #444444; box-shadow: 1px 1px 1px grey;">
+		  		<h2><strong style="font-family: 'Oswald'">{{ selected_post.title }}&nbsp;<span style="color:#1c5a8e;" class="reply_count">[{{selected_post.comment_set.all.count}}]</span></strong></h2>
+		  		
+		  	</div>
+		  	<div class="panel-body">
+			    <div class="post">
+			        {% if selected_post.published_date %}
+			            <div class="date" style="text-align: right; width:1009px; padding: 15px">
+			            	posted by
+			                <strong>{{ selected_post.author }}</strong>
+			                <span class="txt_bar"> | </span>
+			                {{ selected_post.published_date }}
+			            </div>
+			        {% endif %}
+			        {% if selected_post.image %}
+			        <div class="input_image">
+			        	<img style="display: block;
+						    margin-left: auto;
+						    margin-right: auto;
+						    margin-bottom: 25px;
+						    max-width: 600px;" src="{{ selected_post.image.url }}"/>
+			        </div>
+			        {% endif %}
+			        <p>{{ selected_post.text|linebreaksbr }}</p>
+					<div class="panel-footer">
+						<div class="panel-heading" style="margin-bottom:40px">
+							<span class="comment_title">댓글</span>
+							<span class="txt_bar"> | </span>
+							<span class="num_txt">총 <strong class="reply_count">
+							{{ selected_post.comment_set.all.count }}
+							</strong> 개</span>
+							<span style="float:right">
+								<a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'comment_new' selected_post.pk %}" class="btn btn-primary">새 댓글</a>
+								<a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'post_list' %}" class="btn btn-default">글목록</a>
+								{% if user.is_authenticated %}
+									{% if selected_post.author == request.user %}
+									    <a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" class="btn btn-default" href="{% url 'post_edit' pk=selected_post.pk %}">수정</a>
+									    <a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" class="btn btn-danger" href="{% url 'post_delete' pk=selected_post.pk %}" >삭제</a>
+								    {% endif %}
+								{% endif %}
+							</span>
+						</div>
+						<div class="panel-body">
+						    <table width=1009px style="margin-bottom: 30px; border: 1px solid #444444;" class="list">
+						        {% for comment in selected_post.comment_set.all %}
+				        		<div class="user">
+				        		<tr>
+				        			<td width="80px" style="background-color: #efefef; text-align: left;"><strong>{{ comment.author }}</strong></td>
+				        			<td class="user" width=750px>
+				        				{{ comment.message }}
+				        			</td>
+				        			<td>
+				        			{% if comment.author == request.user.username %}
+					        			<a href="{{ comment.get_edit_url }}">수정</a>
+					        			<a href="{{ comment.get_delete_url }}" class="text-danger">삭제</a>
+					        		{% endif %}
+					        		</td>
+					        		<td width=60px>{{ comment.created_date|date:"H:i" }}</td>
+					        	</tr>
+						        {% endfor %}
+							</table>
+							<table style="height:180px;">
+								<tr >
+									<td>
+						        		<textarea style="width:1000px;height:100px;" name="comment" title="
+		인터넷은 우리가 함께 만들어가는 소중한 공간입니다.
+		댓글 작성 시 타인에 대한 배려와 책임을 담아주세요.
+		" form="usrform"></textarea>
+						        		<a style="border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'comment_new' selected_post.pk %}" class="btn btn-primary">새 댓글</a>
+						        	</td>
+						        </tr>
+						    </table>
+						</div>
 					</div>
-				</div>
+			  	</div>
 			</div>
 		</div>
 	</div>
-    <table width = 1009px, border="0">
-        <div class="post_elements">
-            <tr height=30px>
-                <th width=60px>
-                    <div style="text-align:left;">
-                        ID
-                    </div>
-                </th>
-                <th>
-                    <div style="text-align:center">
-                        제목
-                    </div>
-                </th>
-                <th>글쓴이</th>
-                <th>날짜</th>
-            </tr>
-        </div>
-    {% for post in posts %}
-        {% if post.is_public %}
-        	{% if post == selected_post %}
-				<div class="post">
-				        <tr bgcolor="#f4f7ff">
-				            <td>
-				                <div style="text-align:left">
-				                    {{ post.id }}
-				                </div>
-				            </td>
-				            <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
-				            <td>{{ post.author }}</td>
-				            <td>{{ post.published_date|date:"H:i" }}</td>
-				        </tr>
-				</div>
-			{% else %}
-				<div class="post">
-				        <tr bgcolor="#c7dded">
-				            <td>
-				                <div style="text-align:left">
-				                    {{ post.id }}
-				                </div>
-				            </td>
-				            <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
-				            <td>{{ post.author }}</td>
-				            <td>{{ post.published_date|date:"H:i" }}</td>
-				        </tr>
-				</div>
-			{% endif %}
-        {% endif %}
-    {% endfor %}
-    </table>
-    {% if user.is_authenticated %}
-        <a style="padding:5px; margin-top: 10px; margin-bottom: 50px;border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'post_new' %}" class="btn btn-primary">글쓰기</a>
-    {% endif %}
+	<div style="margin-left: 15px;">
+	    <table width = 1009px, border="0" class="list" style="border: 1px solid #444444;">
+	        <div class="post_elements">
+	            <tr height=30px>
+	                <th width=60px>
+	                    <div style="text-align:left;">
+	                        ID
+	                    </div>
+	                </th>
+	                <th>
+	                    <div style="text-align:center">
+	                        제목
+	                    </div>
+	                </th>
+	                <th>글쓴이</th>
+	                <th>날짜</th>
+	            </tr>
+	        </div>
+	    {% for post in posts %}
+	        {% if post.is_public %}
+	        	{% if post == selected_post %}
+					<div class="post">
+					        <tr bgcolor="#f4f7ff">
+					            <td>
+					                <div style="text-align:left">
+					                    {{ post.id }}
+					                </div>
+					            </td>
+					            <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
+					            <td>{{ post.author }}</td>
+					            <td>{{ post.published_date|date:"H:i" }}</td>
+					        </tr>
+					</div>
+				{% else %}
+					<div class="post">
+					        <tr bgcolor="#c7dded">
+					            <td>
+					                <div style="text-align:left">
+					                    {{ post.id }}
+					                </div>
+					            </td>
+					            <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
+					            <td>{{ post.author }}</td>
+					            <td>{{ post.published_date|date:"H:i" }}</td>
+					        </tr>
+					</div>
+				{% endif %}
+	        {% endif %}
+	    {% endfor %}
+	    </table>
+	    {% if user.is_authenticated %}
+	        <a style="padding:5px; margin-top: 10px;margin-bottom: 50px;border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'post_new' %}" class="btn btn-primary">글쓰기</a>
+	    {% endif %}
+	</div>
 {% endblock %}

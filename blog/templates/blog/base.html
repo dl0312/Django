@@ -11,38 +11,61 @@
         <link href="//fonts.googleapis.com/css?family=Slabo&subset=latin,latin-ext" rel="stylesheet" type='text/css'>
         <link href="//fonts.googleapis.com/css?family=Oswald&subset=latin,latin-ext" rel="stylesheet" type='text/css'>
         <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+        <script>
+            function openNav() {
+                document.getElementById("mySidenav").style.width = "250px";
+            }
+
+            function closeNav() {
+                document.getElementById("mySidenav").style.width = "0";
+            }
+        </script>
     </head>
     <body>
+        <span style="font-size:40px;cursor:pointer;position: fixed;margin-left:20px;" onclick="openNav()"><strong>&#9776;</strong></span>
         <div class="page-header" class="row">
             <spam class="service_name">
                 <div class="col-md-12">
                 <h1>
                     <a href="/">
                         <img src="{% static 'image/clap.gif' %}" style="width:150px; border-radius: 50%;"  />
-                        <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);" class="centered">CLAP!</div>
+                        <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);" class="centered">Movie Go</div>
                     </a>
                 </h1>
                 </div>
             </spam>
-            <spam class="col-md-4">
-                {% if user.is_authenticated %}
-                    <div class="top-menu">
-                        <a href="{% url 'profile' %}">
-                            {{ user }}
-                        </a>
-                    </div>
-                {% endif %}
-            </spam class="col-md-4">
         </div>
         <div class="content container">
             <div class="row">
-                <div class="col-md-4">
-                </div>
-                <div class="col-md-4">
+                <div class="main">
                 {% block content %}
                 {% endblock %}
                 </div>
-                <div class="col-md-4">
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <section class="login_wrap inbox">
+                        <div class="logged_in clearfix">
+                            <span>
+                                <img src="{% static 'image/hne.jpg' %}" class="profile_image" style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);" />
+                            </span>
+                            <p class="welcome" style="text-align: center;">
+                                    {% if user.is_authenticated %}
+                                    <a href="{% url 'profile' %}" class="nickname" style="text-decoration: none;font-size: 25px;color: #818181;transition: 0.3s;">{{user}}</a>
+                                    {% else %}
+                                    <span style="text-decoration: none;font-size: 25px;color: #818181;transition: 0.3s;">방문자</span>
+                                    {% endif %}
+                                님<br>
+                                환영합니다.
+                            </p>
+                            {% if user.is_anonymous %}
+                                <a href="{% url 'login' %}" class="nickname" style="text-align: center;">Login</a>
+                            {% endif %}
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'logout' %}" class="nickname" style="text-align: center;">Logout</a>
+                            {% endif %}
+                            <a href="{% url 'signup' %}" class="nickname" style="text-align: center;">Signup</a>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

@@ -5,7 +5,7 @@
         table {
             border: 1px solid #444444;
         }
-        th, td ,td a:visited,td a:active{
+        th, td ,td a:visited{
             color: black;
             border-bottom: 1px solid #444444;
             padding-left: 15px;
@@ -17,39 +17,41 @@
             color: white;
         }
     </style>
-    <table width = 1009px, border="0">
-        <div class="post_elements">
-            <tr height=30px>
-                <th width=60px>
-                    <div style="text-align:left;">
-                        ID
-                    </div>
-                </th>
-                <th>
-                    <div style="text-align:center">제목</div>
-                </th>
-                <th>글쓴이</th>
-                <th>날짜</th>
-            </tr>
-        </div>
-    {% for post in posts %}
-        {% if post.is_public %}
-        <div class="post">
-                <tr bgcolor="#c7dded">
-                    <td>
-                        <div style="text-align:left">
-                            {{ post.id }}
+    <div style="margin-left: 10px;">
+        <table width = 1000px, border="0">
+            <div class="post_elements">
+                <tr height=30px>
+                    <th width=60px>
+                        <div style="text-align:left;">
+                            ID
                         </div>
-                    </td>
-                    <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
-                    <td>{{ post.author }}</td>
-                    <td>{{ post.published_date|date:"H:i" }}</td>
+                    </th>
+                    <th>
+                        <div style="text-align:center">제목</div>
+                    </th>
+                    <th>글쓴이</th>
+                    <th>날짜</th>
                 </tr>
-        </div>
+            </div>
+        {% for post in posts %}
+            {% if post.is_public %}
+            <div class="post">
+                    <tr bgcolor="#c7dded">
+                        <td>
+                            <div style="text-align:left">
+                                {{ post.id }}
+                            </div>
+                        </td>
+                        <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
+                        <td>{{ post.author }}</td>
+                        <td>{{ post.published_date|date:"H:i" }}</td>
+                    </tr>
+            </div>
+            {% endif %}
+        {% endfor %}
+        </table>
+        {% if user.is_authenticated %}
+            <a style="padding:5px; margin-top: 10px; border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'post_new' %}" class="btn btn-primary">글쓰기</a>
         {% endif %}
-    {% endfor %}
-    </table>
-    {% if user.is_authenticated %}
-        <a style="padding:5px; margin-top: 10px; border: 1px solid #444444; box-shadow: 1px 1px 1px grey;" href="{% url 'post_new' %}" class="btn btn-primary">글쓰기</a>
-    {% endif %}
+    </div>
 {% endblock %}
