@@ -21,16 +21,21 @@
         <table width = 1000px, border="0">
             <div class="post_elements">
                 <tr height=30px>
-                    <th width=60px>
+                    <th width=80px>
                         <div style="text-align:left;">
                             ID
                         </div>
                     </th>
-                    <th>
-                        <div style="text-align:center">제목</div>
+                    <th width=80px>
+                        <div style="text-align:left;">
+                            구분
+                        </div>
                     </th>
-                    <th>글쓴이</th>
-                    <th>날짜</th>
+                    <th>
+                        <div style="text-align:center; width: 600px"">제목</div>
+                    </th>
+                    <th><div style="text-align:center;">글쓴이</div></th>
+                    <th width=80px><div style="text-align:center;">날짜</div></th>
                 </tr>
             </div>
         {% for post in posts %}
@@ -42,9 +47,20 @@
                                 {{ post.id }}
                             </div>
                         </td>
-                        <td><h5><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h5></td>
-                        <td>{{ post.author }}</td>
-                        <td>{{ post.published_date|date:"H:i" }}</td>
+                        <td>
+                            <div style="text-align:left;">
+                                {{ post.category }}
+                            </div>
+                        </td>
+                        <td><a style="vertical-align:middle;" href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a>
+                        {% if post.image %}
+                            <i class="material-icons" style="font-size:20px; color:#2c526d;vertical-align:middle;">image</i>
+                        {% endif %}
+                        <strong><span style="color:#1c5a8e">({{ post.comment_set.all.count }})</span>
+                        </strong>
+                        </td>
+                        <td><div style="text-align:center;">{{ post.author }}</div></td>
+                        <td><div style="text-align:center;">{{ post.published_date|date:"H:i" }}</div></td>
                     </tr>
             </div>
             {% endif %}

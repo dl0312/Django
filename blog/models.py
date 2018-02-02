@@ -7,8 +7,20 @@ def upload_location(instance, filename):
     #return "%s/%s.%s" %(instance.id, filename, extension)
     return "%s/%s" %(instance.id, filename)
 
+class Category(models.Model):
+    title = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+        ordering = ['title']
+
+    def __str__(self):
+        return self.title    
+
 class Post(models.Model):
     author = models.ForeignKey('auth.User',on_delete=models.PROTECT)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.TextField()
     image = models.ImageField(upload_to=upload_location,
